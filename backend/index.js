@@ -15,7 +15,7 @@ const port = process.env.PORT || 5000;
 
 // middleware
 app.use(cors({
-    origin: "*" || "https://sopify-five.vercel.app",
+    origin: ["*", "https://sopify-five.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
 }));
