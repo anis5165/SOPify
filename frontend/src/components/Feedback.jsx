@@ -28,7 +28,7 @@ const Feedback = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('http://localhost:5000/feedback', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/feedback`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -423,7 +423,7 @@ document.addEventListener('DOMContentLoaded', function () {
             };
             
             // Send to server
-            fetch('http://localhost:5000/sops/add-from-extension', {
+            fetch('https://sopify.onrender.com/sops/add-from-extension', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
