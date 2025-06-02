@@ -66,38 +66,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Meet the Team */}
-      <section className="py-16 px-6 bg-blue-50">
-        <h2 className="text-3xl font-semibold text-center mb-10 animate-fadeIn">Meet the Team</h2>
-        <div className="flex flex-wrap justify-center gap-8 max-w-5xl mx-auto">
-          {[
-            {
-              name: 'Anamika Singh',
-              role: 'Registration, Procedure Generation, Content Editing',
-              img: 'girl.jpg' // Add illustrated girl image here
-            },
-            {
-              name: 'Yadav Ruchi Tulsiram',
-              role: 'Dashboard, Feedback, Exporting Tools',
-              img: 'girl.jpg' // Add illustrated girl image here
-            }
-          ].map((member, index) => (
-            <div
-              key={index}
-              className="bg-white p-6 rounded-xl shadow hover:shadow-lg w-72 text-center transition duration-300 hover:scale-105"
-            >
-              <img
-                src={member.img}
-                alt={member.name}
-                className="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-4 border-blue-200"
-              />
-              <h3 className="text-xl font-semibold mb-1">{member.name}</h3>
-              <p className="text-gray-600">{member.role}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white text-center py-4">
         <p>&copy; {new Date().getFullYear()} SOPify. All rights reserved.</p>
