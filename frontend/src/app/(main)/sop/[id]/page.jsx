@@ -3,9 +3,14 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { 
   ArrowLeft, Save, Plus, Trash2, ChevronUp, ChevronDown, 
-  Edit, CheckCircle, Clock, ExternalLink, Image, Camera 
+  Edit, CheckCircle, Clock, ExternalLink, Image, Camera, FileText, ArrowRight
 } from "lucide-react";
 import axios from 'axios';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import Footer from "@/components/Footer";
 
 const SOPViewEditPage = () => {
   const params = useParams();
@@ -237,7 +242,7 @@ const SOPViewEditPage = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
       </div>
     );
@@ -245,373 +250,439 @@ const SOPViewEditPage = () => {
 
   if (error && !sop) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8 flex flex-col items-center justify-center">
-        <div className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full text-center">
-          <div className="text-red-500 text-6xl mb-4">⚠️</div>
-          <h1 className="text-2xl font-bold text-red-600 mb-4">Error Loading SOP</h1>
-          <p className="text-gray-600 mb-6">{error}</p>
-          <button 
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-            onClick={() => router.push('/manage-sop')}
-          >
-            Return to SOPs
-          </button>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-8 flex flex-col items-center justify-center">
+        <Card className="max-w-md w-full">
+          <CardContent className="pt-6 text-center">
+            <div className="text-red-500 text-6xl mb-4">⚠️</div>
+            <h1 className="text-2xl font-bold text-red-600 mb-4">Error Loading SOP</h1>
+            <p className="text-gray-600 mb-6">{error}</p>
+            <Button 
+              onClick={() => router.push('/manage-sop')}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              Return to SOPs
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white p-4 md:p-8">
-      <div className="max-w-5xl mx-auto">
-        {/* Header with navigation and actions */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => router.push('/manage-sop')}
-              className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors"
-              title="Back to SOPs"
-            >
-              <ArrowLeft size={20} className="text-gray-600" />
-            </button>
-            
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-2">
-                {sop.fromExtension && <Camera size={24} className="text-blue-600" />}
-                {isEditing ? 'Editing:' : ''} {sop.title}
-              </h1>
-              <p className="text-gray-500 text-sm">
-                Created: {new Date(sop.createdAt).toLocaleDateString()}
-                {sop.updatedAt !== sop.createdAt && 
-                  ` · Updated: ${new Date(sop.updatedAt).toLocaleDateString()}`
-                }
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex gap-3">
-            {isEditing ? (
-              <>
-                <button
-                  onClick={() => setIsEditing(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSave}
-                  disabled={saving}
-                  className="px-4 py-2 bg-blue-600 rounded-lg text-white hover:bg-blue-700 transition-colors flex items-center gap-2"
-                >
-                  {saving ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      Saving...
-                    </>
-                  ) : (
-                    <>
-                      <Save size={18} />
-                      Save Changes
-                    </>
-                  )}
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="px-4 py-2 bg-blue-600 rounded-lg text-white hover:bg-blue-700 transition-colors flex items-center gap-2"
-              >
-                <Edit size={18} />
-                Edit SOP
-              </button>
-            )}
-          </div>
-        </div>
-        
-        {/* Success message */}
-        {success && (
-          <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-2">
-            <CheckCircle size={20} />
-            {success}
-          </div>
-        )}
-        
-        {/* Error message */}
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-            {error}
-          </div>
-        )}
-        
-        {/* SOP Content */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold text-gray-700 mb-2">Title</h2>
-            {isEditing ? (
-              <input
-                type="text"
-                name="title"
-                value={sop.title}
-                onChange={handleSopChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            ) : (
-              <p className="text-xl font-medium text-gray-800">{sop.title}</p>
-            )}
-          </div>
-          
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold text-gray-700 mb-2">Description</h2>
-            {isEditing ? (
-              <textarea
-                name="description"
-                value={sop.description}
-                onChange={handleSopChange}
-                rows={4}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            ) : (
-              <p className="text-gray-600 whitespace-pre-line">{sop.description}</p>
-            )}
-          </div>
-          
-          {/* Main image if available */}
-          {sop.image && sop.image.path && (
-            <div className="mb-6">
-              <h2 className="text-lg font-semibold text-gray-700 mb-2">Main Image</h2>
-              <div className="relative rounded-lg overflow-hidden border border-gray-200">
-                <img 
-                  src={`${process.env.NEXT_PUBLIC_API_URL}/sop/image/${sopId}`}
-                  alt={sop.title}
-                  className="w-full max-h-80 object-contain"
-                />
+    <div className="flex flex-col min-h-screen">
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="w-full py-12 md:py-16 lg:py-24 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <div className="flex items-center justify-center space-x-2 mb-4">
+                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <FileText className="h-5 w-5 text-white" />
+                  </div>
+                  <span className="font-bold text-xl">SOPify</span>
+                </div>
+                <Badge variant="secondary">SOP Details</Badge>
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                  {isEditing ? 'Editing SOP' : sop.title}
+                </h1>
+                <p className="max-w-[600px] text-gray-500 md:text-xl">
+                  {sop.description}
+                </p>
               </div>
             </div>
-          )}
-        </div>
-        
-        {/* Steps Section */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold text-gray-800">Steps</h2>
-            {isEditing && (
-              <button
-                onClick={handleAddStep}
-                className="flex items-center gap-2 bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded-lg transition-colors"
-              >
-                <Plus size={18} />
-                Add Step
-              </button>
-            )}
           </div>
-          
-          {sop.steps && sop.steps.length > 0 ? (
-            <div className="space-y-6">
-              {sop.steps.map((step, index) => (
-                <div 
-                  key={step._id || index}
-                  className={`bg-white rounded-xl shadow-lg overflow-hidden
-                    ${isEditing ? 'border-2 border-dashed' : ''}
-                    ${draggedStepIndex === index ? 'opacity-50' : ''}
-                    ${editStep === index ? 'border-blue-400' : 'border-transparent'}`
-                  }
-                  draggable={isEditing}
-                  onDragStart={() => handleDragStart(index)}
-                  onDragOver={(e) => handleDragOver(e, index)}
-                  onDrop={(e) => handleDrop(e, index)}
+        </section>
+
+        {/* Main Content */}
+        <section className="w-full md:px-16 py-12 md:py-24 lg:py-32">
+          <div className="container px-4 md:px-6">
+            {/* Header with navigation and actions */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => router.push('/manage-sop')}
+                  className="bg-white"
                 >
-                  <div className="flex justify-between items-center bg-gray-50 p-4 border-b border-gray-100">
-                    <div className="flex items-center gap-2">
-                      <div className="bg-blue-600 text-white w-7 h-7 flex items-center justify-center rounded-full font-bold">
-                        {index + 1}
-                      </div>
-                      
-                      {editStep === index ? (
-                        <input
-                          type="text"
-                          value={step.title}
-                          onChange={(e) => handleStepChange(index, 'title', e.target.value)}
-                          className="px-3 py-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full"
-                        />
-                      ) : (
-                        <h3 className="font-semibold text-gray-800">{step.title || `Step ${index + 1}`}</h3>
-                      )}
-                    </div>
-                    
-                    <div className="flex items-center gap-1">
-                      {isEditing && (
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back to SOPs
+                </Button>
+                
+                <div>
+                  <p className="text-gray-500 text-sm">
+                    Created: {new Date(sop.createdAt).toLocaleDateString()}
+                    {sop.updatedAt !== sop.createdAt && 
+                      ` · Updated: ${new Date(sop.updatedAt).toLocaleDateString()}`
+                    }
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex gap-3">
+                {isEditing ? (
+                  <>
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsEditing(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleSave}
+                      disabled={saving}
+                      className="bg-blue-600 hover:bg-blue-700"
+                    >
+                      {saving ? (
                         <>
-                          {editStep === index ? (
-                            <button
-                              onClick={() => setEditStep(null)}
-                              className="p-1 text-green-600 hover:text-green-800"
-                              title="Save step edit"
-                            >
-                              <CheckCircle size={18} />
-                            </button>
-                          ) : (
-                            <button
-                              onClick={() => setEditStep(index)}
-                              className="p-1 text-blue-600 hover:text-blue-800"
-                              title="Edit step"
-                            >
-                              <Edit size={18} />
-                            </button>
-                          )}
-                          
-                          <button
-                            onClick={() => handleMoveStep(index, 'up')}
-                            disabled={index === 0}
-                            className={`p-1 ${index === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:text-gray-800'}`}
-                            title="Move up"
-                          >
-                            <ChevronUp size={18} />
-                          </button>
-                          
-                          <button
-                            onClick={() => handleMoveStep(index, 'down')}
-                            disabled={index === sop.steps.length - 1}
-                            className={`p-1 ${index === sop.steps.length - 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:text-gray-800'}`}
-                            title="Move down"
-                          >
-                            <ChevronDown size={18} />
-                          </button>
-                          
-                          <button
-                            onClick={() => handleDeleteStep(index)}
-                            className="p-1 text-red-600 hover:text-red-800"
-                            title="Delete step"
-                          >
-                            <Trash2 size={18} />
-                          </button>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="mr-2 h-4 w-4" />
+                          Save Changes
                         </>
                       )}
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    onClick={() => setIsEditing(true)}
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    <Edit className="mr-2 h-4 w-4" />
+                    Edit SOP
+                  </Button>
+                )}
+              </div>
+            </div>
+            
+            {/* Success message */}
+            {success && (
+              <Card className="mb-8 border-green-200 bg-green-50">
+                <CardContent className="pt-6">
+                  <div className="flex items-center gap-2 text-green-700">
+                    <CheckCircle className="h-5 w-5" />
+                    {success}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+            
+            {/* Error message */}
+            {error && (
+              <Card className="mb-8 border-red-200 bg-red-50">
+                <CardContent className="pt-6">
+                  <p className="text-red-600">{error}</p>
+                </CardContent>
+              </Card>
+            )}
+            
+            {/* SOP Content */}
+            <Card className="mb-8">
+              <CardContent className="pt-6">
+                <div className="mb-6">
+                  <h2 className="text-lg font-semibold text-gray-700 mb-2">Title</h2>
+                  {isEditing ? (
+                    <Input
+                      type="text"
+                      name="title"
+                      value={sop.title}
+                      onChange={handleSopChange}
+                    />
+                  ) : (
+                    <p className="text-xl font-medium text-gray-800">{sop.title}</p>
+                  )}
+                </div>
+                
+                <div className="mb-6">
+                  <h2 className="text-lg font-semibold text-gray-700 mb-2">Description</h2>
+                  {isEditing ? (
+                    <textarea
+                      name="description"
+                      value={sop.description}
+                      onChange={handleSopChange}
+                      rows={4}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  ) : (
+                    <p className="text-gray-600 whitespace-pre-line">{sop.description}</p>
+                  )}
+                </div>
+                
+                {/* Main image if available */}
+                {sop.image && sop.image.path && (
+                  <div className="mb-6">
+                    <h2 className="text-lg font-semibold text-gray-700 mb-2">Main Image</h2>
+                    <div className="relative rounded-lg overflow-hidden border border-gray-200">
+                      <img 
+                        src={`${process.env.NEXT_PUBLIC_API_URL}/sop/image/${sopId}`}
+                        alt={sop.title}
+                        className="w-full max-h-80 object-contain"
+                      />
                     </div>
                   </div>
-                  
-                  <div className="p-4">
-                    {/* Step content */}
-                    <div className="mb-4">
-                      {editStep === index ? (
-                        <textarea
-                          value={step.description || ''}
-                          onChange={(e) => handleStepChange(index, 'description', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          rows={3}
-                          placeholder="Describe this step..."
-                        />
-                      ) : (
-                        step.description && <p className="text-gray-600 whitespace-pre-line">{step.description}</p>
-                      )}
-                    </div>
-                    
-                    {/* Step image */}
-                    {(step.imgData || editStep === index) && (
-                      <div className="mt-4">
-                        {editStep === index && (
-                          <div className="mb-3">
-                            <input
-                              id={`step-image-upload-${index}`}
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) => handleImageChange(e, index)}
-                              className="hidden"
+                )}
+              </CardContent>
+            </Card>
+            
+            {/* Steps Section */}
+            <div className="mb-8">
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-800">Steps</h2>
+                  <p className="text-gray-500">Manage the steps of your SOP</p>
+                </div>
+                {isEditing && (
+                  <Button
+                    onClick={handleAddStep}
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Step
+                  </Button>
+                )}
+              </div>
+              
+              {sop.steps && sop.steps.length > 0 ? (
+                <div className="space-y-6">
+                  {sop.steps.map((step, index) => (
+                    <Card 
+                      key={step._id || index}
+                      className={`relative overflow-hidden
+                        ${isEditing ? 'border-2 border-dashed' : ''}
+                        ${draggedStepIndex === index ? 'opacity-50' : ''}
+                        ${editStep === index ? 'border-blue-400' : 'border-transparent'}`
+                      }
+                      draggable={isEditing}
+                      onDragStart={() => handleDragStart(index)}
+                      onDragOver={(e) => handleDragOver(e, index)}
+                      onDrop={(e) => handleDrop(e, index)}
+                    >
+                      <CardContent className="pt-6">
+                        <div className="flex justify-between items-center mb-4">
+                          <div className="flex items-center gap-2">
+                            <Badge className="bg-blue-600">
+                              Step {index + 1}
+                            </Badge>
+                            
+                            {editStep === index ? (
+                              <Input
+                                type="text"
+                                value={step.title}
+                                onChange={(e) => handleStepChange(index, 'title', e.target.value)}
+                                className="w-full"
+                              />
+                            ) : (
+                              <h3 className="font-semibold text-gray-800">{step.title || `Step ${index + 1}`}</h3>
+                            )}
+                          </div>
+                          
+                          <div className="flex items-center gap-1">
+                            {isEditing && (
+                              <>
+                                {editStep === index ? (
+                                  <Button
+                                    variant="ghost"
+                                    onClick={() => setEditStep(null)}
+                                    className="text-green-600 hover:text-green-800"
+                                  >
+                                    <CheckCircle className="h-4 w-4" />
+                                  </Button>
+                                ) : (
+                                  <Button
+                                    variant="ghost"
+                                    onClick={() => setEditStep(index)}
+                                    className="text-blue-600 hover:text-blue-800"
+                                  >
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                )}
+                                
+                                <Button
+                                  variant="ghost"
+                                  onClick={() => handleMoveStep(index, 'up')}
+                                  disabled={index === 0}
+                                  className={index === 0 ? 'text-gray-400' : 'text-gray-600 hover:text-gray-800'}
+                                >
+                                  <ChevronUp className="h-4 w-4" />
+                                </Button>
+                                
+                                <Button
+                                  variant="ghost"
+                                  onClick={() => handleMoveStep(index, 'down')}
+                                  disabled={index === sop.steps.length - 1}
+                                  className={index === sop.steps.length - 1 ? 'text-gray-400' : 'text-gray-600 hover:text-gray-800'}
+                                >
+                                  <ChevronDown className="h-4 w-4" />
+                                </Button>
+                                
+                                <Button
+                                  variant="ghost"
+                                  onClick={() => handleDeleteStep(index)}
+                                  className="text-red-600 hover:text-red-800"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                        
+                        {/* Step content */}
+                        <div className="mb-4">
+                          {editStep === index ? (
+                            <textarea
+                              value={step.description || ''}
+                              onChange={(e) => handleStepChange(index, 'description', e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              rows={3}
+                              placeholder="Describe this step..."
                             />
-                            <button
-                              onClick={() => handleStepImageUpload(index)}
-                              className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded-md text-sm transition-colors"
-                            >
-                              <Image size={14} />
-                              {step.imgData ? 'Change Image' : 'Add Image'}
-                            </button>
+                          ) : (
+                            step.description && <p className="text-gray-600 whitespace-pre-line">{step.description}</p>
+                          )}
+                        </div>
+                        
+                        {/* Step image */}
+                        {(step.imgData || editStep === index) && (
+                          <div className="mt-4">
+                            {editStep === index && (
+                              <div className="mb-3">
+                                <input
+                                  id={`step-image-upload-${index}`}
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={(e) => handleImageChange(e, index)}
+                                  className="hidden"
+                                />
+                                <Button
+                                  variant="outline"
+                                  onClick={() => handleStepImageUpload(index)}
+                                  className="bg-gray-100 hover:bg-gray-200"
+                                >
+                                  <Image className="mr-2 h-4 w-4" />
+                                  {step.imgData ? 'Change Image' : 'Add Image'}
+                                </Button>
+                              </div>
+                            )}
+                            
+                            {step.imgData && (
+                              <div className="relative rounded-lg overflow-hidden border border-gray-200">
+                                <img 
+                                  src={step.imgData} 
+                                  alt={step.title || `Step ${index + 1}`} 
+                                  className="max-w-full max-h-96 object-contain cursor-pointer"
+                                  onClick={() => {
+                                    // Create a modal for full-size view
+                                    const modal = document.createElement('div');
+                                    modal.style.position = 'fixed';
+                                    modal.style.top = '0';
+                                    modal.style.left = '0';
+                                    modal.style.width = '100%';
+                                    modal.style.height = '100%';
+                                    modal.style.backgroundColor = 'rgba(0,0,0,0.8)';
+                                    modal.style.display = 'flex';
+                                    modal.style.justifyContent = 'center';
+                                    modal.style.alignItems = 'center';
+                                    modal.style.zIndex = '9999';
+                                    modal.style.cursor = 'pointer';
+                                    
+                                    const img = document.createElement('img');
+                                    img.src = step.imgData;
+                                    img.style.maxWidth = '90%';
+                                    img.style.maxHeight = '90%';
+                                    img.style.objectFit = 'contain';
+                                    
+                                    modal.appendChild(img);
+                                    document.body.appendChild(modal);
+                                    
+                                    modal.onclick = () => {
+                                      document.body.removeChild(modal);
+                                    };
+                                  }}
+                                />
+                              </div>
+                            )}
                           </div>
                         )}
                         
-                        {step.imgData && (
-                          <div className="relative rounded-lg overflow-hidden border border-gray-200">
-                            <img 
-                              src={step.imgData} 
-                              alt={step.title || `Step ${index + 1}`} 
-                              className="max-w-full max-h-96 object-contain cursor-pointer"
-                              onClick={() => {
-                                // Create a modal for full-size view
-                                const modal = document.createElement('div');
-                                modal.style.position = 'fixed';
-                                modal.style.top = '0';
-                                modal.style.left = '0';
-                                modal.style.width = '100%';
-                                modal.style.height = '100%';
-                                modal.style.backgroundColor = 'rgba(0,0,0,0.8)';
-                                modal.style.display = 'flex';
-                                modal.style.justifyContent = 'center';
-                                modal.style.alignItems = 'center';
-                                modal.style.zIndex = '9999';
-                                modal.style.cursor = 'pointer';
-                                
-                                const img = document.createElement('img');
-                                img.src = step.imgData;
-                                img.style.maxWidth = '90%';
-                                img.style.maxHeight = '90%';
-                                img.style.objectFit = 'contain';
-                                
-                                modal.appendChild(img);
-                                document.body.appendChild(modal);
-                                
-                                modal.onclick = () => {
-                                  document.body.removeChild(modal);
-                                };
-                              }}
-                            />
-                          </div>
-                        )}
-                      </div>
-                    )}
-                    
-                    {/* Step metadata */}
-                    <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-gray-500">
-                      {step.timestamp && (
-                        <div className="flex items-center gap-1">
-                          <Clock size={12} />
-                          {new Date(step.timestamp).toLocaleString()}
+                        {/* Step metadata */}
+                        <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-gray-500">
+                          {step.timestamp && (
+                            <div className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {new Date(step.timestamp).toLocaleString()}
+                            </div>
+                          )}
+                          
+                          {step.url && (
+                            <div className="flex items-center gap-1">
+                              <ExternalLink className="h-3 w-3" />
+                              <a 
+                                href={step.url} 
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:underline truncate max-w-xs"
+                              >
+                                {step.url}
+                              </a>
+                            </div>
+                          )}
                         </div>
-                      )}
-                      
-                      {step.url && (
-                        <div className="flex items-center gap-1">
-                          <ExternalLink size={12} />
-                          <a 
-                            href={step.url} 
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-600 hover:underline truncate max-w-xs"
-                          >
-                            {step.url}
-                          </a>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl p-8 text-center">
-              <Image size={36} className="mx-auto text-gray-400 mb-3" />
-              <p className="text-gray-600 mb-4">No steps defined for this SOP yet.</p>
-              
-              {isEditing && (
-                <button
-                  onClick={handleAddStep}
-                  className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors mx-auto"
-                >
-                  <Plus size={18} />
-                  Add First Step
-                </button>
+              ) : (
+                <Card className="border-2 border-dashed border-gray-300">
+                  <CardContent className="pt-6 text-center">
+                    <Image className="mx-auto text-gray-400 mb-3" size={36} />
+                    <p className="text-gray-600 mb-4">No steps defined for this SOP yet.</p>
+                    
+                    {isEditing && (
+                      <Button
+                        onClick={handleAddStep}
+                        className="bg-blue-600 hover:bg-blue-700"
+                      >
+                        <Plus className="mr-2 h-4 w-4" />
+                        Add First Step
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
               )}
             </div>
-          )}
-        </div>
-      </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-blue-600">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-white">
+                  Ready to Create More SOPs?
+                </h2>
+                <p className="max-w-[600px] text-blue-100 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                  Start documenting your processes and streamline your workflow today.
+                </p>
+              </div>
+              <Button 
+                size="lg" 
+                className="bg-white text-blue-600 hover:bg-blue-50"
+                onClick={() => router.push('/manage-sop')}
+              >
+                Back to SOPs
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
     </div>
   );
 };

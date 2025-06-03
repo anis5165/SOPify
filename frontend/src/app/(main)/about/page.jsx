@@ -14,8 +14,16 @@ import {
   Sparkles,
   Star,
   HeartHandshake,
-  Rocket
+  Rocket,
+  ArrowRight,
+  CheckCircle,
+  Zap,
+  Shield
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import Footer from "@/components/Footer";
 
 const AboutUs = () => {
   const features = [
@@ -56,170 +64,163 @@ const AboutUs = () => {
       name: "Anamika Singh",
       role: "Backend Developer",
       image: "girl.jpg",
-      tasks: [
-        
-      ],
+      tasks: [],
     },
     {
       name: "Yadav Ruchi Tulsiram",
       role: "Frontend Developer",
       image: "girl.jpg",
-      tasks: [
-       
-        
-      ],
+      tasks: [],
     },
   ];
 
   return (
-    <div className="bg-gradient-to-br from-indigo-50 via-white to-blue-100 min-h-screen text-gray-800">
-      <div className="max-w-6xl mx-auto px-4 py-12 space-y-16">
-
-        {/* Introduction */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="border border-blue-200 bg-white/90 rounded-3xl shadow-xl p-6 md:p-10 backdrop-blur-sm relative overflow-hidden"
-          style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/cubes.png')" }}
-        >
-          <Sparkles className="absolute top-4 right-4 text-yellow-400 animate-pulse" size={28} />
-          <h1 className="text-4xl md:text-5xl font-bold text-blue-700 text-center">About SOPify</h1>
-          <p className="text-center text-lg text-gray-600 mt-4">
-            SOPify helps you create structured SOPs automatically with screenshots, highlights, and formatting – all exportable in one click.
-          </p>
-        </motion.div>
-
-        {/* Our Vision */}
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1 }}
-          className="border border-purple-300 bg-gradient-to-r from-purple-50 to-white rounded-3xl p-6 shadow-md"
-          style={{ backgroundImage: "url('white.jpg')" }}
-        >
-          <h2 className="text-2xl font-bold text-purple-700 mb-4 flex items-center gap-2">
-            <Eye color="#7c3aed" /> Our Vision
-          </h2>
-          <p className="text-gray-700">
-            We envision a world where SOP creation is no longer a tedious task but an automated, intuitive process. SOPify empowers educators, businesses, and professionals to document efficiently, boost productivity, and maintain consistency.
-          </p>
-        </motion.div>
-
-        {/* Our Mission */}
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1 }}
-          className="border border-indigo-300 bg-gradient-to-l from-indigo-50 to-white rounded-3xl p-6 shadow-md"
-        
-        >
-          <h2 className="text-2xl font-bold text-indigo-700 mb-4 flex items-center gap-2">
-            <Target color="#6366f1" /> Our Mission
-          </h2>
-          <p className="text-gray-700">
-            Our mission is to eliminate the manual hassle of SOP documentation by delivering smart, automated tools that streamline the creation, customization, and sharing of process guides – helping teams save time and scale faster.
-          </p>
-        </motion.div>
-
-        {/* Key Features */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-          className="border border-green-200 bg-gradient-to-tr from-green-50 to-white rounded-3xl p-6 shadow-md"
-        >
-          <h2 className="text-2xl font-bold text-green-700 mb-6 text-center">Key Features</h2>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {features.map((feature, idx) => (
-              <motion.div
-                key={idx}
-                whileHover={{ scale: 1.05 }}
-                className="p-4 bg-white border rounded-xl shadow text-center hover:shadow-lg transition-all duration-300"
-              >
-                <div className="mb-2 animate-pulse">{feature.icon}</div>
-                <h4 className="font-semibold text-md text-blue-600">{feature.title}</h4>
-                <p className="text-sm text-gray-600">{feature.text}</p>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* How to Use SOPify */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1 }}
-          className="border border-blue-200 bg-white rounded-2xl p-6 shadow-md"
-        >
-          <h2 className="text-2xl font-bold text-blue-700 mb-4 flex items-center gap-2">
-            <ImageIcon color="#3b82f6" /> How to Use SOPify
-          </h2>
-          <img
-            src="SOPIFY.jpg"
-            alt="How to use SOPify"
-            className="rounded-xl shadow-lg w-full object-cover"
-          />
-        </motion.div>
-
-        {/* Meet the Team */}
-        <motion.div
-          initial={{ opacity: 0, y: 60 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="border border-pink-200 bg-pink-50 rounded-3xl p-6 shadow-md"
-        >
-          <h2 className="text-2xl font-bold text-pink-700 mb-6 text-center flex items-center justify-center gap-2">
-            <HeartHandshake /> Meet the Team
-          </h2>
-          <div className="grid sm:grid-cols-2 gap-6">
-            {team.map((member, idx) => (
-              <motion.div
-                key={idx}
-                whileHover={{ scale: 1.03 }}
-                className="border bg-white p-4 rounded-xl shadow hover:shadow-lg transition-all"
-              >
-                <div className="flex items-center gap-4">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="w-16 h-16 rounded-full border"
-                  />
-                  <div>
-                    <h4 className="font-bold text-blue-700">{member.name}</h4>
-                    <p className="text-sm text-gray-600">{member.role}</p>
+    <div className="flex flex-col min-h-screen">
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="w-full py-12 md:py-16 lg:py-24 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <div className="flex items-center justify-center space-x-2 mb-4">
+                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <FileText className="h-5 w-5 text-white" />
                   </div>
+                  <span className="font-bold text-xl">SOPify</span>
                 </div>
-                <ul className="mt-2 ml-2 list-disc text-sm text-gray-600">
-                  {member.tasks.map((task, i) => (
-                    <li key={i}>{task}</li>
-                  ))}
-                </ul>
-              </motion.div>
-            ))}
+                <Badge variant="secondary">About Us</Badge>
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                  Transforming SOP Creation
+                </h1>
+                <p className="max-w-[600px] text-gray-500 md:text-xl">
+                  We're on a mission to revolutionize how businesses create and manage their Standard Operating Procedures.
+                </p>
+              </div>
+            </div>
           </div>
-        </motion.div>
+        </section>
 
-        {/* Conclusion */}
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1 }}
-          className="border border-blue-300 bg-blue-50 rounded-3xl p-6 shadow relative"
-        >
-          <Rocket className="absolute top-4 right-4 text-indigo-400 animate-bounce" />
-          <h2 className="text-2xl font-bold text-blue-700 mb-4 flex items-center gap-2">
-            <PenTool color="#2563eb" /> Conclusion
-          </h2>
-          <p className="text-gray-700">
-            SOPify is built to revolutionize how professionals create SOPs. By simplifying the process, enabling exports, and saving valuable time, we empower users to focus on what truly matters — their goals.
-          </p>
-        </motion.div>
+        {/* Vision & Mission Section */}
+        <section className="w-full md:16 py-12 md:py-24 lg:py-32">
+          <div className="container px-4 md:px-6">
+            <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
+              <Card className="relative overflow-hidden">
+                <CardHeader>
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                    <Eye className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <CardTitle>Our Vision</CardTitle>
+                  <CardDescription>
+                    We envision a world where SOP creation is no longer a tedious task but an automated, intuitive process. SOPify empowers educators, businesses, and professionals to document efficiently, boost productivity, and maintain consistency.
+                  </CardDescription>
+                </CardHeader>
+              </Card>
 
-        <footer className="text-center text-sm text-gray-500 pt-10">
-          © 2025 SOPify. Built by Anamika Singh & Ruchi Tulsiram.
-        </footer>
-      </div>
+              <Card className="relative overflow-hidden">
+                <CardHeader>
+                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                    <Target className="h-6 w-6 text-purple-600" />
+                  </div>
+                  <CardTitle>Our Mission</CardTitle>
+                  <CardDescription>
+                    Our mission is to eliminate the manual hassle of SOP documentation by delivering smart, automated tools that streamline the creation, customization, and sharing of process guides – helping teams save time and scale faster.
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-50">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <Badge variant="secondary">Features</Badge>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
+                  Key Features
+                </h2>
+                <p className="max-w-[600px] text-gray-500 md:text-xl">
+                  Discover what makes SOPify the ultimate solution for SOP creation
+                </p>
+              </div>
+            </div>
+            <div className="mx-auto grid max-w-5xl items-start gap-6 py-12 lg:grid-cols-3 lg:gap-12">
+              {features.map((feature, idx) => (
+                <Card key={idx} className="relative overflow-hidden">
+                  <CardHeader>
+                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                      {feature.icon}
+                    </div>
+                    <CardTitle>{feature.title}</CardTitle>
+                    <CardDescription>{feature.text}</CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Team Section */}
+        <section className="w-full py-12 md:py-24 lg:py-32">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <Badge variant="secondary">Team</Badge>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
+                  Meet Our Team
+                </h2>
+                <p className="max-w-[600px] text-gray-500 md:text-xl">
+                  The passionate people behind SOPify
+                </p>
+              </div>
+            </div>
+            <div className="mx-auto grid max-w-5xl items-start gap-6 py-12 lg:grid-cols-2 lg:gap-12">
+              {team.map((member, idx) => (
+                <Card key={idx} className="relative overflow-hidden">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-16 h-16 rounded-full overflow-hidden">
+                        <img
+                          src={member.image}
+                          alt={member.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg">{member.name}</h3>
+                        <p className="text-gray-500">{member.role}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-blue-600">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-white">
+                  Ready to Transform Your Documentation?
+                </h2>
+                <p className="max-w-[600px] text-blue-100 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                  Join thousands of teams who have already streamlined their SOP creation process with SOPify.
+                </p>
+              </div>
+              <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50">
+                Get Started
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
     </div>
   );
 };
