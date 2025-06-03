@@ -1,14 +1,23 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { FileText, Menu, X } from 'lucide-react'
+import { FileText, Menu, X, LogOut } from 'lucide-react'
+import { AppContext } from '@/context/AppContext'
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { isAuthenticated, logout } = useContext(AppContext)
+  const router = useRouter()
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
+  }
+
+  const handleLogout = () => {
+    logout()
+    router.push('/')
   }
 
   return (
@@ -34,16 +43,34 @@ const Navbar = () => {
           <Link href="/contact" className="text-sm font-medium hover:text-blue-600 transition-colors">
             Contact us
           </Link>
+          {isAuthenticated && (
+            <Link href="/manage-sop" className="text-sm font-medium hover:text-blue-600 transition-colors">
+              Manage SOPs
+            </Link>
+          )}
         </nav>
 
         {/* Desktop Buttons */}
         <div className="hidden md:flex ml-6 items-center space-x-2">
-          <Link href="/login" className="text-sm font-medium hover:text-blue-600 transition-colors">
-            Sign In
-          </Link>
-          <Link href="/signup" className="text-sm font-medium bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
-            Get Started
-          </Link>
+          {isAuthenticated ? (
+            <Button
+              variant="outline"
+              onClick={handleLogout}
+              className="flex items-center gap-2"
+            >
+              <LogOut className="h-4 w-4" />
+              Logout
+            </Button>
+          ) : (
+            <>
+              <Link href="/login" className="text-sm font-medium hover:text-blue-600 transition-colors">
+                Sign In
+              </Link>
+              <Link href="/signup" className="text-sm font-medium bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                Get Started
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -85,13 +112,46 @@ const Navbar = () => {
             >
               Contact us
             </Link>
+            {isAuthenticated && (
+              <Link 
+                href="/manage-sop" 
+                className="text-sm font-medium hover:text-blue-600 transition-colors"
+                onClick={toggleMenu}
+              >
+                Manage SOPs
+              </Link>
+            )}
             <div className="flex flex-col space-y-2 pt-4 border-t">
-              <Link href="/login" className="text-sm font-medium hover:text-blue-600 transition-colors">
-                Sign In
-              </Link>
-              <Link href="/signup" className="text-sm font-medium hover:text-blue-600 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
-                Get Started
-              </Link>
+              {isAuthenticated ? (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    handleLogout()
+                    toggleMenu()
+                  }}
+                  className="flex items-center gap-2"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </Button>
+              ) : (
+                <>
+                  <Link 
+                    href="/login" 
+                    className="text-sm font-medium hover:text-blue-600 transition-colors"
+                    onClick={toggleMenu}
+                  >
+                    Sign In
+                  </Link>
+                  <Link 
+                    href="/signup" 
+                    className="text-sm font-medium hover:text-blue-600 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+                    onClick={toggleMenu}
+                  >
+                    Get Started
+                  </Link>
+                </>
+              )}
             </div>
           </nav>
         </div>
