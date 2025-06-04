@@ -11,44 +11,19 @@ export const AppProvider = ({ children }) => {
 
   // Check authentication status on mount
   useEffect(() => {
-    checkAuthStatus()
-  }, [])
-
-  const checkAuthStatus = async () => {
-    try {
-      const token = localStorage.getItem('token')
-      if (!token) {
-        setIsAuthenticated(false)
-        setUser(null)
-        setLoading(false)
-        return
+    const token = localStorage.getItem('token')
+    if (token) {
+      setIsAuthenticated(true)
+      // You can decode the token to get user info if needed
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]))
+        setUser(payload)
+      } catch (error) {
+        console.error('Error decoding token:', error)
       }
-
-      // Verify token with backend
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-
-      if (response.data.success) {
-        setIsAuthenticated(true)
-        setUser(response.data.user)
-      } else {
-        // If token is invalid, clear it
-        localStorage.removeItem('token')
-        setIsAuthenticated(false)
-        setUser(null)
-      }
-    } catch (error) {
-      console.error('Auth check failed:', error)
-      localStorage.removeItem('token')
-      setIsAuthenticated(false)
-      setUser(null)
-    } finally {
-      setLoading(false)
     }
-  }
+    setLoading(false)
+  }, [])
 
   const login = async (email, password) => {
     try {
@@ -107,8 +82,7 @@ export const AppProvider = ({ children }) => {
     loading,
     login,
     signup,
-    logout,
-    checkAuthStatus
+    logout
   }
 
   return (
